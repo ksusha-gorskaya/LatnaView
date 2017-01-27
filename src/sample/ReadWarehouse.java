@@ -10,7 +10,7 @@ import java.util.Vector;
 /**
  * Created by Ксения Горская on 23.01.2017.
  */
-public class Warehouse {
+public class ReadWarehouse {
     private Integer directionOfMovement;
     private Vector<Point> northDelivery;
     private Vector<Point> southDelivery;
@@ -22,7 +22,7 @@ public class Warehouse {
     String line = "";
     BufferedReader br = null;
 
-    public Warehouse() {
+    public ReadWarehouse() {
         super();
         northDelivery = new Vector<Point>();
         southDelivery = new Vector<Point>();
@@ -144,6 +144,7 @@ public class Warehouse {
             line = br.readLine();
             readShelves(numberOfRows);
 
+            //write all data in console
             /*for (int i=1; i<shelves.size(); i++){
                 for (int j=1; j<shelves.get(i).length; j++) {
                     System.out.print(shelves.get(i)[j] + " ");

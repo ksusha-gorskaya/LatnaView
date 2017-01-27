@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         ReadData readData=new ReadData();
-        String csvFile = "C:\\Users\\ksgo0816\\Documents\\LatasProject\\LatnaView-master\\Goods.csv";
+        String csvFile = "C:\\Users\\ksgo0816\\Documents\\LatasProject\\LatnaView\\Result.csv";
         readData.reader(csvFile);
 
         /*Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
