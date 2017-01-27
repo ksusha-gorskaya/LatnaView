@@ -1,10 +1,7 @@
 package sample;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by Ксения Горская on 21.01.2017.
@@ -20,8 +17,13 @@ public class ReadData {
         boolean parametersFile = false;
         if (fileName.contains("Parameters")) parametersFile = true;
         if (fileName.contains("Warehouse")){
-            Warehouse warehouse = new Warehouse();
+            ReadWarehouse warehouse = new ReadWarehouse();
             warehouse.readWarehouse(fileName);
+            return matrix;
+        }
+        if (fileName.contains("Result")){
+            ReadResult result = new ReadResult();
+            result.readResult(fileName);
             return matrix;
         }
 
@@ -39,6 +41,7 @@ public class ReadData {
                 headline = false;
             }
 
+            //write all date in console
             /*for (int i=0; i<matrix.size(); i++){
                 for (int j=0; j<matrix.get(i).length; j++) {
                     System.out.print(matrix.get(i)[j] + " ");
