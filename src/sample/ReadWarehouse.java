@@ -17,7 +17,7 @@ public class ReadWarehouse {
     private int numberOfRows;
     private Vector<Point> coordinatesUpperLeftVertexRow;
     private Vector<Point> coordinatesLowerRightVertexRow;
-    private ArrayList<String[]> shelves;
+    private ArrayList<Vector<String>> shelves;
 
     String line = "";
     BufferedReader br = null;
@@ -77,12 +77,26 @@ public class ReadWarehouse {
     }
 
     public void readShelves(int numberOfRows) throws Exception {
-        shelves = new ArrayList<String[]>();
-
+        shelves = new ArrayList<Vector<String>>(numberOfRows);
+        for (int i = 0; i < numberOfRows; i++){
+            shelves.add(new Vector<String>());
+        }
+        boolean emptyField = true;
         while ((line = br.readLine()) != null) {
             String[] rows = line.split(";");
-            shelves.add(rows);
+            for (int i=1; i<rows.length; i++){
+                if (emptyField)     //(rows[i].contains("Пустая тара"))
+                    shelves.get(i-1).add("#");
+                else
+                    if (rows[i].length()!=0) shelves.get(i-1).add(rows[i]);
+            }
+            emptyField=false;
         }
+
+        //write columns as rows
+        /*for (int i=0; i<numberOfRows; i++) {
+            System.out.println(shelves.get(i));
+        }*/
     }
 
     public void readWarehouse(String filename) throws Exception {

@@ -13,6 +13,7 @@ public class ReadResult {
     private Integer numberOfWarehousemen;
     private ArrayList<String[]> InfoAboutWarehousemen;
     private ArrayList<String[]> replenishment;
+    private ArrayList<Storekeeper> listStorekeeper;
 
     String line = "";
     BufferedReader br = null;
@@ -33,6 +34,26 @@ public class ReadResult {
         while ((line = br.readLine()) != null) {
             String[] rows = line.split(";");
             replenishment.add(rows);
+        }
+    }
+
+    public void setListStorekeeper(){
+        listStorekeeper = new ArrayList<>();
+        Storekeeper storekeeper = new Storekeeper();
+        for (int i=1; i<=numberOfWarehousemen; i++){
+            storekeeper.setId(i);
+            storekeeper.setNumberOfTask(Integer.valueOf(InfoAboutWarehousemen.get(i)[1]));
+            storekeeper.setSummLength(Double.valueOf(InfoAboutWarehousemen.get(i)[2].replace(",", ".")));
+            storekeeper.setTimeOnMove(Integer.valueOf(InfoAboutWarehousemen.get(i)[3]));
+            storekeeper.setTimeOnSort(Integer.valueOf(InfoAboutWarehousemen.get(i)[4]));
+            storekeeper.setSummTime(Integer.valueOf(InfoAboutWarehousemen.get(i)[5]));
+
+            /*System.out.println(storekeeper.getId() + "  "
+                    + storekeeper.getNumberOfTask() + "  "
+                    + storekeeper.getSummLength() + "  "
+                    + storekeeper.getTimeOnMove() + "  "
+                    + storekeeper.getTimeOnSort() + "  "
+                    + storekeeper.getSummTime() + "  ");*/
         }
     }
 
@@ -69,6 +90,31 @@ public class ReadResult {
                 }
                 System.out.println();
             }*/
+
+            setListStorekeeper();
+
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Done");
+    }
+
+    public void readLog(String filename) throws IOException{
+        try {
+            br = new BufferedReader(new FileReader(filename));
+            line = br.readLine();
+            line = br.readLine();
+            //String[] elements = line.split(";");
+            //String tmp = elements[0];
+            //System.out.println(tmp);
 
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
