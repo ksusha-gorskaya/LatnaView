@@ -17,14 +17,6 @@ public class Task {
         time="";
     }
 
-    public void clearAll() {
-        try {
-            listTask.clear();
-        } catch (NullPointerException npe) {
-
-        }
-    }
-
     public Integer getId() {
         return id;
     }
