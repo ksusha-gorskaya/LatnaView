@@ -25,6 +25,7 @@ public class ReadData {
             ReadResult result = new ReadResult();
             result.readResult(fileName);
             fileName = "C:\\Users\\dns\\Desktop\\Латас\\LatnaView\\LatnaView\\test_log.1";
+            //fileName = "C:\\Users\\ksgo0816\\Documents\\LatasProject\\LatnaView\\test_log.1";
             result.readLog(fileName);
             return matrix;
         }

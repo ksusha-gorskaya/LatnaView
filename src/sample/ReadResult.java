@@ -39,22 +39,51 @@ public class ReadResult {
 
     public void setListStorekeeper(){
         listStorekeeper = new ArrayList<>();
-        Storekeeper storekeeper = new Storekeeper();
+
+        //Order to index of storekeepers starts with 1, therefore added  empty st(as index 0)
+        Storekeeper st = new Storekeeper();
+        listStorekeeper.add(st);
+
         for (int i=1; i<=numberOfWarehousemen; i++){
+            Storekeeper storekeeper = new Storekeeper();
             storekeeper.setId(i);
             storekeeper.setNumberOfTask(Integer.valueOf(InfoAboutWarehousemen.get(i)[1]));
             storekeeper.setSummLength(Double.valueOf(InfoAboutWarehousemen.get(i)[2].replace(",", ".")));
             storekeeper.setTimeOnMove(Integer.valueOf(InfoAboutWarehousemen.get(i)[3]));
             storekeeper.setTimeOnSort(Integer.valueOf(InfoAboutWarehousemen.get(i)[4]));
             storekeeper.setSummTime(Integer.valueOf(InfoAboutWarehousemen.get(i)[5]));
-
-            /*System.out.println(storekeeper.getId() + "  "
-                    + storekeeper.getNumberOfTask() + "  "
-                    + storekeeper.getSummLength() + "  "
-                    + storekeeper.getTimeOnMove() + "  "
-                    + storekeeper.getTimeOnSort() + "  "
-                    + storekeeper.getSummTime() + "  ");*/
+            listStorekeeper.add(storekeeper);
+            /*System.out.println(storekeeper.getId() + " "
+                + storekeeper.getNumberOfTask() + " "
+                + storekeeper.getSummLength() + " "
+                + storekeeper.getTimeOnMove() + " "
+                + storekeeper.getTimeOnSort() + " "
+                + storekeeper.getSummTime() + " ");*/
         }
+    }
+
+    public void parseAndSetTasksOfStorekeeper(ArrayList<Task> taskArrayList){
+        String[] elements = line.split("\\[");
+        String[] idStorekeeper = elements[0].split(" ");
+        //System.out.println(Integer.parseInt(idStorekeeper[0]));
+        String[] idTasks = elements[1].split("\\]");
+        idTasks = idTasks[0].split(" ");
+        Integer[] idTask = new Integer[idTasks.length];
+        ArrayList<Task> tasksOfStorekeeper = new ArrayList<>();//need tasks of storekeeper 1
+        for (int i=0; i<idTasks.length; i++){
+            idTask[i] = Integer.parseInt(idTasks[i].split(";")[0]);
+            tasksOfStorekeeper.add(taskArrayList.get(idTask[i]-1));
+            //System.out.print(idTask[i] + " ");
+        }
+
+        listStorekeeper.get(Integer.parseInt(idStorekeeper[0])).setTasks(tasksOfStorekeeper);
+        //System.out.println(listStorekeeper.get(1).getTasks().get(0).getListTask().get(0)[0]
+        //        + " " + listStorekeeper.get(1).getTasks().get(1).getListTask().get(0)[0]);
+        //listStorekeeper.get(1) = info about 1 storekeeper
+        //listStorekeeper.get(1).getTasks().get(0) = get first task from list from 1 storekeeper
+        //listStorekeeper.get(1).getTasks().get(0).getListTask().get(0)[0] = get first element of first task from list from 1 storekeeper
+        //listStorekeeper.get(1).getTasks().get(1).getListTask().get(0)[0]) = get first element of second task from list from 1 storekeeper
+
     }
 
     public void readResult(String filename) throws Exception {
@@ -111,10 +140,47 @@ public class ReadResult {
         try {
             br = new BufferedReader(new FileReader(filename));
             line = br.readLine();
-            line = br.readLine();
-            //String[] elements = line.split(";");
-            //String tmp = elements[0];
-            //System.out.println(tmp);
+            ArrayList<Task> taskArrayList = new ArrayList<>();
+
+            while (((line = br.readLine()) != null) && (line.contains(":"))) {
+                Task task = new Task();
+                ArrayList<String[]> visitedCell = new ArrayList<>();
+                String[] elements = line.split("\\[");
+                String[] subElements = elements[0].split(" ");
+                task.setId(Integer.parseInt(subElements[0]));
+                //System.out.print(task.getId() + " ");
+                subElements = elements[1].split(" ");
+                task.setTime(subElements[3].split(";")[0]);
+                //System.out.print(task.getTime() + " ");
+                subElements = elements[2].split("\\]]");
+                int index=0;
+                subElements = subElements[0].split(" ");
+                for (int i=0; i<subElements.length/2; i++)
+                    visitedCell.add(new String[2]);
+                for (int j=0; j<subElements.length; j+=2){
+                    String[] cells = new String[2];
+                    cells[0] = subElements[j].split(":")[0];
+                    cells[1] = subElements[j+1].split(";")[0];
+                    visitedCell.get(index)[0] = cells[0];
+                    visitedCell.get(index)[1] = cells[1];
+                    index++;
+                }
+                task.setListTask(visitedCell);
+                /*if (task.getId()==2) {
+                    for (int j = 0; j < task.getListTask().size(); j++) {
+                        System.out.print(" " + task.getListTask().get(j)[0] + " " + task.getListTask().get(j)[1]);
+                    }
+                }*/
+                //System.out.println();
+                taskArrayList.add(task);
+            }
+            while (!line.contains("]")) {
+                line = br.readLine();
+            }
+            parseAndSetTasksOfStorekeeper(taskArrayList);
+            while ((line = br.readLine()) != null && (line.contains("]"))) {
+                parseAndSetTasksOfStorekeeper(taskArrayList);
+            }
 
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
