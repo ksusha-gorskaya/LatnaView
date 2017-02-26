@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<Pane prefHeight="332.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
+   <children>
+      <Button layoutX="31.0" layoutY="56.0" mnemonicParsing="false" onAction="#openMyFile" text="Open" />
+      <Button layoutX="170.0" layoutY="56.0" mnemonicParsing="false" onAction="#showData" text="Show" />
+      <Button layoutX="31.0" layoutY="124.0" mnemonicParsing="false" text="Button" />
+   </children>
+</Pane>
