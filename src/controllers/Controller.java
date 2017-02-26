@@ -1,20 +1,13 @@
 package controllers;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
-import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import sample.ReadData;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,23 +17,33 @@ public class Controller {
     ReadData readData = new ReadData();
     public static ArrayList<String[]> result = new ArrayList<String[]>();
 
-    public static ArrayList<String[]> getResult(){return result;}
+    private Parent root;
+    private MenuBar menu;
 
     public void openMyFile() throws Exception {
+        String FileName = null;
         JFileChooser fileopen = new JFileChooser();
         int ret = fileopen.showDialog(null, "Открыть файл");
         if (ret == JFileChooser.APPROVE_OPTION) {
             File file = fileopen.getSelectedFile();
+            FileName = file.getName();
             result = readData.reader(file.getAbsolutePath());
         }
+
+
+        root=FXMLLoader.load(getClass().getResource("../views/mainWindow.fxml"));
+        MenuItem menuItem = new MenuItem();
+        menuItem.setText(FileName);
+        menu = (MenuBar)root.lookup("#MenuBarID");
+        menu.getMenus().get(1).getItems().add(menuItem); //добавляет ко второму меню menuItem
+
     }
 
 
     public void showData() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../views/showData.fxml"));
 
         Controller2 ct2 = new Controller2();
-        ct2.setResult(result, root);
+        ct2.setResult(result, FXMLLoader.load(getClass().getResource("../views/showData.fxml")));
 
     }
 }
