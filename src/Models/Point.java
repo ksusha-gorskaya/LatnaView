@@ -1,4 +1,4 @@
-package sample;
+package Models;
 
 /**
  * Created by Ксения Горская on 23.01.2017.

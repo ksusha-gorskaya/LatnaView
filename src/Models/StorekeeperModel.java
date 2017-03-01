@@ -1,11 +1,11 @@
-package sample;
+package Models;
 
 import java.util.ArrayList;
 
 /**
  * Created by Ксения Горская on 04.02.2017.
  */
-public class Storekeeper {
+public class StorekeeperModel {
     private Integer id;
     private ArrayList<Task> tasks;
     private Integer numberOfTask;//Число заданий
@@ -14,7 +14,7 @@ public class Storekeeper {
     private Integer timeOnSort;//Время, потраченное на отборку (сек)
     private Integer summTime;//Общее время (сек)
 
-    public Storekeeper() {
+    public StorekeeperModel() {
         super();
         tasks = new ArrayList<>();
         numberOfTask=0;

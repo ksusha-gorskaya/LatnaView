@@ -1,4 +1,7 @@
-package sample;
+package Readers;
+
+import Models.StorekeeperModel;
+import Models.Task;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,7 +16,7 @@ public class ReadResult {
     private Integer numberOfWarehousemen;
     private ArrayList<String[]> InfoAboutWarehousemen;
     private ArrayList<String[]> replenishment;
-    private ArrayList<Storekeeper> listStorekeeper;
+    private ArrayList<StorekeeperModel> listStorekeeper;
 
     String line = "";
     BufferedReader br = null;
@@ -41,11 +44,11 @@ public class ReadResult {
         listStorekeeper = new ArrayList<>();
 
         //Order to index of storekeepers starts with 1, therefore added  empty st(as index 0)
-        Storekeeper st = new Storekeeper();
+        StorekeeperModel st = new StorekeeperModel();
         listStorekeeper.add(st);
 
         for (int i=1; i<=numberOfWarehousemen; i++){
-            Storekeeper storekeeper = new Storekeeper();
+            StorekeeperModel storekeeper = new StorekeeperModel();
             storekeeper.setId(i);
             storekeeper.setNumberOfTask(Integer.valueOf(InfoAboutWarehousemen.get(i)[1]));
             storekeeper.setSummLength(Double.valueOf(InfoAboutWarehousemen.get(i)[2].replace(",", ".")));
@@ -53,19 +56,12 @@ public class ReadResult {
             storekeeper.setTimeOnSort(Integer.valueOf(InfoAboutWarehousemen.get(i)[4]));
             storekeeper.setSummTime(Integer.valueOf(InfoAboutWarehousemen.get(i)[5]));
             listStorekeeper.add(storekeeper);
-            /*System.out.println(storekeeper.getId() + " "
-                + storekeeper.getNumberOfTask() + " "
-                + storekeeper.getSummLength() + " "
-                + storekeeper.getTimeOnMove() + " "
-                + storekeeper.getTimeOnSort() + " "
-                + storekeeper.getSummTime() + " ");*/
         }
     }
 
     public void parseAndSetTasksOfStorekeeper(ArrayList<Task> taskArrayList){
         String[] elements = line.split("\\[");
         String[] idStorekeeper = elements[0].split(" ");
-        //System.out.println(Integer.parseInt(idStorekeeper[0]));
         String[] idTasks = elements[1].split("\\]");
         idTasks = idTasks[0].split(" ");
         Integer[] idTask = new Integer[idTasks.length];
@@ -73,16 +69,9 @@ public class ReadResult {
         for (int i=0; i<idTasks.length; i++){
             idTask[i] = Integer.parseInt(idTasks[i].split(";")[0]);
             tasksOfStorekeeper.add(taskArrayList.get(idTask[i]-1));
-            //System.out.print(idTask[i] + " ");
         }
 
         listStorekeeper.get(Integer.parseInt(idStorekeeper[0])).setTasks(tasksOfStorekeeper);
-        //System.out.println(listStorekeeper.get(1).getTasks().get(0).getListTask().get(0)[0]
-        //        + " " + listStorekeeper.get(1).getTasks().get(1).getListTask().get(0)[0]);
-        //listStorekeeper.get(1) = info about 1 storekeeper
-        //listStorekeeper.get(1).getTasks().get(0) = get first task from list from 1 storekeeper
-        //listStorekeeper.get(1).getTasks().get(0).getListTask().get(0)[0] = get first element of first task from list from 1 storekeeper
-        //listStorekeeper.get(1).getTasks().get(1).getListTask().get(0)[0]) = get first element of second task from list from 1 storekeeper
 
     }
 
@@ -97,29 +86,9 @@ public class ReadResult {
                 e.printStackTrace();
             }
 
-            //System.out.println(numberOfWarehousemen);
-
             line = br.readLine();
             readInfoAboutWarehousemen(numberOfWarehousemen);
-
-            //write all data in console
-            /*for (int i=1; i<InfoAboutWarehousemen.size(); i++){
-                for (int j=1; j<InfoAboutWarehousemen.get(i).length; j++) {
-                    System.out.print(InfoAboutWarehousemen.get(i)[j] + " ");
-                }
-                System.out.println();
-            }*/
-
             readReplenishment();
-
-            //write all data in console
-            /*for (int i=0; i<replenishment.size(); i++){
-                for (int j=0; j<replenishment.get(i).length; j++) {
-                    System.out.print(replenishment.get(i)[j] + " ");
-                }
-                System.out.println();
-            }*/
-
             setListStorekeeper();
 
         } catch (FileNotFoundException e1) {
@@ -166,12 +135,6 @@ public class ReadResult {
                     index++;
                 }
                 task.setListTask(visitedCell);
-                /*if (task.getId()==2) {
-                    for (int j = 0; j < task.getListTask().size(); j++) {
-                        System.out.print(" " + task.getListTask().get(j)[0] + " " + task.getListTask().get(j)[1]);
-                    }
-                }*/
-                //System.out.println();
                 taskArrayList.add(task);
             }
             while (!line.contains("]")) {
