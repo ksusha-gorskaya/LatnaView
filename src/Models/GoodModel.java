@@ -31,20 +31,12 @@ public class GoodModel {
         return IndexOfShop.get();
     }
 
-    public SimpleLongProperty indexOfShopProperty() {
-        return IndexOfShop;
-    }
-
     public void setIndexOfShop(long indexOfShop) {
         this.IndexOfShop.set(indexOfShop);
     }
 
     public long getIndexOfProduct() {
         return IndexOfProduct.get();
-    }
-
-    public SimpleLongProperty indexOfProductProperty() {
-        return IndexOfProduct;
     }
 
     public void setIndexOfProduct(long indexOfProduct) {
@@ -55,20 +47,12 @@ public class GoodModel {
         return InPieces.get();
     }
 
-    public SimpleFloatProperty inPiecesProperty() {
-        return InPieces;
-    }
-
     public void setInPieces(int inPieces) {
         this.InPieces.set(inPieces);
     }
 
     public float getInLiters() {
         return InLiters.get();
-    }
-
-    public SimpleFloatProperty inLitersProperty() {
-        return InLiters;
     }
 
     public void setInLiters(float inLiters) {
@@ -79,20 +63,12 @@ public class GoodModel {
         return InBoxes.get();
     }
 
-    public SimpleIntegerProperty inBoxesProperty() {
-        return InBoxes;
-    }
-
     public void setInBoxes(int inBoxes) {
         this.InBoxes.set(inBoxes);
     }
 
     public int getOneZero() {
         return OneZero.get();
-    }
-
-    public SimpleIntegerProperty oneZeroProperty() {
-        return OneZero;
     }
 
     public void setOneZero(int oneZero) {

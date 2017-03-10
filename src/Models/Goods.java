@@ -58,7 +58,7 @@ public class Goods {
 
     public String[] getHeaders(){
         //return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "1-inpieces,0-inboxes"};
-        return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "1-inpieces"};
+        return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "OneZero"};
     }
 
     public GoodModel[] toGoodsArray(){
