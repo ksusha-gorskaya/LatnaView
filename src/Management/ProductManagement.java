@@ -1,3 +1,4 @@
+/*
 package Management;
 
 import Readers.ReadData;
@@ -9,9 +10,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Created by Anna Barinova on 6.02.2017.
- */
+ *//*
+
 
 public class ProductManagement {
 
@@ -135,3 +138,4 @@ public class ProductManagement {
         }
     }
 }
+*/
