@@ -1,5 +1,6 @@
 package controllers;
 
+import Models.Goods;
 import Models.Items;
 import Models.Orders;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ public class EditDocController{
 
     public Items itemsVector;
     public Orders ordersVector;
+    public Goods goodsVector;
 
     public final ObservableList resultList = FXCollections.observableArrayList();
     private final HBox hb = new HBox();
@@ -47,6 +49,11 @@ public class EditDocController{
                     ordersVector = new Orders(filePath);
                     resultList.addAll( ordersVector.toOrdersArray());
                     countField = ordersVector.getOrder(0).getCountField();
+                    break;
+                case "Goods.csv":
+                    goodsVector = new Goods(filePath);
+                    resultList.addAll( goodsVector.toGoodsArray());
+                    countField = goodsVector.getGood(0).getCountField();
                     break;
             }
             FillTable(resultList,countField);
@@ -103,7 +110,14 @@ public class EditDocController{
                     fileTableView.getColumns().add(tableColumn);
                 }
                 break;
-
+            case "class Models.GoodModel":
+                for (int i = 0; i < countField; i++) {
+                    TableColumn tableColumn = new TableColumn(goodsVector.getHeaders()[i]);
+                    tableColumn.setCellValueFactory(
+                            new PropertyValueFactory<>(goodsVector.getHeaders()[i]));
+                    fileTableView.getColumns().add(tableColumn);
+                }
+                break;
         }
 
     }
