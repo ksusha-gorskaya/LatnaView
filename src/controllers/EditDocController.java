@@ -2,6 +2,9 @@ package controllers;
 
 import Models.*;
 import javafx.beans.binding.StringBinding;
+import Models.Goods;
+import Models.Items;
+import Models.Orders;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,6 +31,7 @@ public class EditDocController{
     public Items itemsVector;
     public Orders ordersVector;
     public Goods goodsVector;
+    public Parameters parametersVector;
 
     public final ObservableList resultList = FXCollections.observableArrayList();
 
@@ -35,7 +39,6 @@ public class EditDocController{
         Scene scene = new Scene(new Group());
         fileTableView.setEditable(true);
         try {
-
             Stage stage = new Stage();
             int countField=0;
             switch (fileName){
@@ -54,12 +57,15 @@ public class EditDocController{
                     resultList.addAll( goodsVector.toGoodsArray());
                     countField = goodsVector.getGood(0).getCountField();
                     break;
-
+                case "Parameters.csv":
+                    parametersVector = new Parameters(filePath);
+                    resultList.addAll( parametersVector.toParametersArray());
+                    countField = parametersVector.getParameter(0).getCountField();
+                    break;
             }
             FillTable(resultList,countField);
 
-
-            fileTableView.setMinWidth(600);
+            fileTableView.setPrefWidth(600);
 
             final HBox hbRow = new HBox();
             TextField[] tx = new TextField[countField];
@@ -82,35 +88,37 @@ public class EditDocController{
             addButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    String tmp="";
                     for (int i=0;i<tx.length;i++)
                         if(tx[i].getText().isEmpty()){
+                            tmp="";
                             return;
+                        }else{
+                            tmp=tmp.concat(tx[i].getText()+";");
+                            tx[i].setText("");
                         }
-                    String tmp="";
-                    switch (resultList.get(0).getClass().toString()){
-                        case "class Models.ItemModel":
-                            for (int i=0;i<tx.length;i++){
-                                tmp=tmp.concat(tx[i].getText()+";");
-                                tx[i].setText("");
-                            }
 
-                            resultList.add(new ItemModel(tmp));
-                            break;
-                        case "class Models.GoodModel":
-                            for (int i=0;i<tx.length;i++){
-                                tmp=tmp.concat(tx[i].getText()+";");
-                                tx[i].setText("");
-                            }
-                            resultList.add(new GoodModel(tmp));
-                            break;
-                        case "class Models.OrderModel":
-                            for (int i=0;i<tx.length;i++){
-                                tmp=tmp.concat(tx[i].getText()+";");
-                                tx[i].setText("");
-                            }
-                            resultList.add(new OrderModel(tmp));
-                            break;
+                    if(Validate(resultList.get(0).getClass().toString().split(" ")[1],tmp)){
+                        switch (resultList.get(0).getClass().toString()){
+                            case "class Models.ItemModel":
+                                resultList.add(new ItemModel(tmp));
+                                break;
+                            case "class Models.GoodModel":
+                                resultList.add(new GoodModel(tmp));
+                                break;
+                            case "class Models.OrderModel":
+                                resultList.add(new OrderModel(tmp));
+                                break;
+                            case "class Models.ParameterModel":
+                                resultList.add(new ParameterModel(tmp));
+                                break;
+                        }
+                    }else{
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText(null);
+                        alert.setContentText("Wrong input!");
 
+                        alert.showAndWait();
                     }
                 }
             });
@@ -154,34 +162,75 @@ public class EditDocController{
         fileTableView.setItems(resultList);
         fileTableView.setEditable(true);
         String str =resultList.get(0).getClass().toString();
-        switch (str){
-            case "class Models.ItemModel":
-                for(int i=0;i<countField;i++) {
-                    TableColumn tableColumn = new TableColumn(itemsVector.getHeaders()[i]);
+        for(int i=0;i<countField;i++) {
+            TableColumn tableColumn=null;
+            switch(str){
+                case "class Models.ItemModel":
+                    tableColumn = new TableColumn(itemsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<ItemModel,StringBinding>(itemsVector.getHeaders()[i]));
-                    fileTableView.getColumns().add(tableColumn);
-                }
-                break;
-            case "class Models.OrderModel":
-                for (int i = 0; i < countField; i++) {
-                    TableColumn tableColumn = new TableColumn(ordersVector.getHeaders()[i]);
+                    break;
+                case "class Models.GoodModel":
+                    tableColumn = new TableColumn(goodsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
-                            new PropertyValueFactory<>(ordersVector.getHeaders()[i]));
-                    fileTableView.getColumns().add(tableColumn);
-                }
-                break;
-            case "class Models.GoodModel":
-                for (int i = 0; i < countField; i++) {
-                    TableColumn tableColumn = new TableColumn(goodsVector.getHeaders()[i]);
+                            new PropertyValueFactory<GoodModel,StringBinding>(goodsVector.getHeaders()[i]));
+                    break;
+                case "class Models.OrderModel":
+                    tableColumn = new TableColumn(ordersVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
-                            new PropertyValueFactory<>(goodsVector.getHeaders()[i]));
-                    fileTableView.getColumns().add(tableColumn);
-                }
-                break;
-
+                            new PropertyValueFactory<OrderModel,StringBinding>(ordersVector.getHeaders()[i]));
+                    break;
+                case "class Models.ParameterModel":
+                    tableColumn = new TableColumn(parametersVector.getHeaders()[i]);
+                    tableColumn.setCellValueFactory(
+                            new PropertyValueFactory<ParameterModel,StringBinding>(parametersVector.getHeaders()[i]));
+                    break;
+            }
+            fileTableView.getColumns().add(tableColumn);
         }
-
     }
 
+    public boolean Validate(String type, String model){
+        String[] tmp = model.split(";");
+        switch (type){
+            case "Models.ItemModel":
+                try {
+                    //tmp[] = MO,Index,Count,Volume,Rigidity
+                    Long.parseLong(tmp[1]);
+                    Integer.parseInt(tmp[2]);
+                    Double.parseDouble(tmp[3]);
+                    Integer.parseInt(tmp[4]);
+                }catch (Exception ex){
+                    return false;
+                }
+                break;
+            case "Models.OrderModel":
+                try{
+                    //tmp[] = indexOfShop, wtf, deadline, DeliverySide
+                    Long.parseLong(tmp[0]);
+                    //add validate time here
+                    if (!(tmp[3].equalsIgnoreCase("south") || tmp[3].equalsIgnoreCase("north")))
+                        return false;
+                }catch (Exception ex){
+                    return false;
+                }
+                break;
+            case "Models.GoodModel":
+                try{
+                    //tmp[] = "IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "OneZero"
+                    Long.parseLong(tmp[0]);
+                    Long.parseLong(tmp[1]);
+                    Float.parseFloat(tmp[2]);
+                    Float.parseFloat(tmp[3]);
+                    Integer.parseInt(tmp[4]);
+                    Integer.parseInt(tmp[5]);
+                }catch (Exception ex){
+                    return false;
+                }
+                break;
+            case "Models.ParameterModel":
+                break;
+        }
+        return true;
+    }
 }

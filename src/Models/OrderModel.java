@@ -20,7 +20,13 @@ public class OrderModel {
         Deadline = new SimpleStringProperty(deadline);
         DeliverySide = new SimpleStringProperty(deliverySide.name());
     }
-
+    public OrderModel(String model){
+        String[] tmp = model.split(";");
+        IndexOfShop=new SimpleLongProperty(Long.parseLong(tmp[0]));
+        Wtf = new SimpleStringProperty(tmp[1]);
+        Deadline = new SimpleStringProperty(tmp[2]);
+        DeliverySide = new SimpleStringProperty(tmp[3]);
+    }
     public long getIndexOfShop(){return IndexOfShop.get();}
     public void setIndexOfShop(long index){IndexOfShop.set(index);}
 

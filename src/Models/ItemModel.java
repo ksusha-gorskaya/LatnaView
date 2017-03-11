@@ -25,6 +25,15 @@ public class ItemModel {
         this.Volume = new SimpleDoubleProperty(volume);
         this.Rigidity = new SimpleIntegerProperty(rigidity);
     }
+    public ItemModel(String model){
+        String[] tmp = model.split(";");
+        MO=new SimpleStringProperty(tmp[0]);
+        this.Index=new SimpleLongProperty(Long.parseLong(tmp[1]));
+        this.Count = new SimpleIntegerProperty(Integer.parseInt(tmp[2]));
+        this.Volume=new SimpleDoubleProperty(Double.parseDouble(tmp[3]));
+        this.Rigidity=new SimpleIntegerProperty(Integer.parseInt(tmp[4]));
+    }
+
 
     public final long getIndex(){
         return Index.get();
@@ -53,4 +62,25 @@ public class ItemModel {
     public void setMO(String mo){ MO.set(mo); }
 
     public void setCount(int count){this.Count.set(count);}
+
+    public void editCell(int count,String str){
+        switch (count){
+            case 0:
+                setMO(str);
+                break;
+            case 1:
+                setIndex(Long.parseLong(str));
+                break;
+            case 2:
+                setCount(Integer.parseInt(str));
+                break;
+            case 3:
+                setVolume(Double.parseDouble(str));
+                break;
+            case 4:
+                setRigidity(Integer.parseInt(str));
+                break;
+
+        }
+    }
 }

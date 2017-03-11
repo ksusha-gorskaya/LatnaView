@@ -25,6 +25,12 @@ public class MainWindowController {
         JFileChooser fileopen = new JFileChooser();
         fileopen.setCurrentDirectory(new File("."));
         if (fileopen.showDialog(null, "Выбрать файл") == JFileChooser.APPROVE_OPTION) {
+            for (MenuItem item:MenuBarID.getMenus().get(1).getItems()) {
+                String tmp1 = item.getUserData().toString();
+                String tmp2 =fileopen.getSelectedFile().getAbsolutePath();
+                if(tmp1.equals(tmp2))
+                    return;
+            }
             FileName = fileopen.getSelectedFile().getName();
             FilePath=fileopen.getSelectedFile().getAbsolutePath();
             menuItem.setUserData(FilePath);

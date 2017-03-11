@@ -35,6 +35,7 @@ public class GoodModel {
         InBoxes = new SimpleIntegerProperty(Integer.parseInt(tmp[4]));
         OneZero = new SimpleIntegerProperty(Integer.parseInt(tmp[5]));
     }
+
     public long getIndexOfShop() {
         return IndexOfShop.get();
     }
