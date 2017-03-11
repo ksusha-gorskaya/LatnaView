@@ -1,3 +1,4 @@
+/*
 package Management;
 
 import java.io.*;
@@ -7,9 +8,11 @@ import java.util.List;
 import Readers.ReadData;
 import com.opencsv.*;
 
+*/
 /**
  * Created by Anna Barinova on 5.02.2017.
- */
+ *//*
+
 
 public class OrderManagement {
 
@@ -135,3 +138,4 @@ public class OrderManagement {
             }
     }
 }
+*/
