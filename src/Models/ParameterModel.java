@@ -1,10 +1,7 @@
 package Models;
 
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
+import Exceptions.EditException;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.Parent;
 
 /**
  * Created by Ксения Горская on 11.03.2017.
@@ -42,5 +39,10 @@ public class ParameterModel {
 
     public void setValue(String value) {
         this.Value.set(value);
+    }
+
+    public void applyEdit(String str, int column) throws EditException{
+        if(column==0) setParameter(str);
+        if(column==1) setValue(str);
     }
 }

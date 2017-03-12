@@ -42,7 +42,7 @@ public class Goods {
                 }
                 elements[2] = elements[2].replace(",",".");
                 elements[3] = elements[3].replace(",",".");
-                GoodModel g = new GoodModel(Long.parseLong(elements[0]), Long.parseLong(elements[1]), Float.parseFloat(elements[2]), Float.parseFloat(elements[3]), Integer.parseInt(elements[4]), Integer.parseInt(elements[5]));
+                GoodModel g = new GoodModel(elements[0],elements[1],elements[2],elements[3],elements[4],elements[5]);
                 goods.add(g);
             }
         } catch (FileNotFoundException e) {

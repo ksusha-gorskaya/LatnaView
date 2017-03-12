@@ -31,8 +31,7 @@ public class Items {
                 String[] elements = line.split(";");
                 //shelf,index,-,volume,rigidity
                 ItemModel it;
-                it = new ItemModel(elements[0],Long.parseLong(elements[1]),Integer.parseInt(elements[2]),
-                        Double.parseDouble(elements[3].replaceAll(" ","")),Integer.parseInt(elements[4]));
+                it = new ItemModel(elements[0],elements[1],elements[2],elements[3].replaceAll(" ",""),elements[4]);
 
                 items.add(it);
             }
@@ -74,7 +73,7 @@ public class Items {
 
     public boolean isExist(long index) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getIndex() == index) {
+            if (Long.parseLong(items.get(i).getIndex()) == index) {
                 return true;
             }
         }

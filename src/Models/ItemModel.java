@@ -1,5 +1,6 @@
 package Models;
 
+import Exceptions.EditException;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -10,10 +11,10 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class ItemModel {
     private final SimpleStringProperty MO;     //что-то
-    private final SimpleLongProperty Index;//код товара
-    private final SimpleIntegerProperty Count;     //количество
-    private final SimpleDoubleProperty Volume; //объем
-    private final SimpleIntegerProperty Rigidity;  //жесткость
+    private final SimpleStringProperty Index;//код товара
+    private final SimpleStringProperty Count;     //количество
+    private final SimpleStringProperty Volume; //объем
+    private final SimpleStringProperty Rigidity;  //жесткость
 
     @Override
     public String toString(){
@@ -21,70 +22,57 @@ public class ItemModel {
     }
     public int getCountField(){return 5;}
 
-    public ItemModel(String mo, Long index, Integer count, Double volume, Integer rigidity){
+    public ItemModel(String mo, String index, String count, String volume, String rigidity){
 
         MO = new SimpleStringProperty(mo);
-        this.Index =new SimpleLongProperty(index);
-        this.Count = new SimpleIntegerProperty(count);
-        this.Volume = new SimpleDoubleProperty(volume);
-        this.Rigidity = new SimpleIntegerProperty(rigidity);
+        this.Index =new SimpleStringProperty(index);
+        this.Count = new SimpleStringProperty(count);
+        this.Volume = new SimpleStringProperty(volume);
+        this.Rigidity = new SimpleStringProperty(rigidity);
     }
     public ItemModel(String model){
         String[] tmp = model.split(";");
         MO=new SimpleStringProperty(tmp[0]);
-        this.Index=new SimpleLongProperty(Long.parseLong(tmp[1]));
-        this.Count = new SimpleIntegerProperty(Integer.parseInt(tmp[2]));
-        this.Volume=new SimpleDoubleProperty(Double.parseDouble(tmp[3]));
-        this.Rigidity=new SimpleIntegerProperty(Integer.parseInt(tmp[4]));
+        this.Index=new SimpleStringProperty(tmp[1]);
+        this.Count = new SimpleStringProperty(tmp[2]);
+        this.Volume=new SimpleStringProperty(tmp[3]);
+        this.Rigidity=new SimpleStringProperty(tmp[4]);
     }
 
 
-    public final long getIndex(){
+    public final String getIndex(){
         return Index.get();
     }
 
-    public final int getRigidity(){
+    public final String getRigidity(){
         return Rigidity.get();
     }
 
-    public final double getVolume() {
+    public final String getVolume() {
         return Volume.get();
     }
 
     public final String getMO(){return MO.get();}
 
-    public final int getCount(){return Count.get();}
+    public final String getCount(){return Count.get();}
 
-    public void setIndex(long index){ Index.set(index);    }
+    public void setIndex(String index){ Index.set(index);    }
 
-    public void setRigidity(int rigidity){
+    public void setRigidity(String rigidity){
         Rigidity.set(rigidity);
     }
 
-    public void setVolume (double volume){ Volume.set(volume);}
+    public void setVolume (String volume){ Volume.set(volume);}
 
     public void setMO(String mo){ MO.set(mo); }
 
-    public void setCount(int count){this.Count.set(count);}
+    public void setCount(String count){this.Count.set(count);}
 
-    public void editCell(int count,String str){
-        switch (count){
-            case 0:
-                setMO(str);
-                break;
-            case 1:
-                setIndex(Long.parseLong(str));
-                break;
-            case 2:
-                setCount(Integer.parseInt(str));
-                break;
-            case 3:
-                setVolume(Double.parseDouble(str));
-                break;
-            case 4:
-                setRigidity(Integer.parseInt(str));
-                break;
-
-        }
+    public void applyEdit(String str,int column) throws EditException{
+        if(column==0) setMO(str);
+        if(column==1) {Long.parseLong(str);setIndex(str);}
+        if(column==2) {Integer.parseInt(str);setCount(str);}
+        if(column==3) {Double.parseDouble(str);setVolume(str);}
+        if(column==4) {Integer.parseInt(str);setRigidity(str);}
     }
 }

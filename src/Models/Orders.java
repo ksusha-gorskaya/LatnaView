@@ -49,7 +49,7 @@ public class Orders {
                     exp = Expedition.North;
                 }
 
-                OrderModel o = new OrderModel(Long.parseLong(elements[0]), elements[1], deadline, exp);
+                OrderModel o = new OrderModel(elements[0], elements[1], deadline, exp);
                 orders.add(o);
             }
         } catch (FileNotFoundException e) {

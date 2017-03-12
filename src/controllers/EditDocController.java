@@ -1,5 +1,6 @@
 package controllers;
 
+import Exceptions.EditException;
 import Models.*;
 import com.opencsv.CSVWriter;
 import javafx.beans.binding.StringBinding;
@@ -12,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -39,7 +41,6 @@ public class EditDocController{
 
     public void setResult(String fileName,String filePath){
         Scene scene = new Scene(new Group());
-        fileTableView.setEditable(true);
         try {
             Stage stage = new Stage();
             int countField=0;
@@ -83,9 +84,43 @@ public class EditDocController{
 
             final HBox hbBut = new HBox();
             Button addButton = new Button("Add row");
-            Button editButton = new Button("Edit");
             Button deleteButton = new Button("Delete");
+            Button saveButton = new Button("Save");
 
+            saveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    try {
+                        writer = new CSVWriter(new FileWriter(filePath),';');
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    switch (resultList.get(0).getClass().toString()){
+                        case "class Models.ItemModel":
+                            writer.writeNext(itemsVector.getHeaders(),false);
+                            writer.writeAll(itemsVector.toStringList(),false);
+                            break;
+                        case "class Models.GoodModel":
+                            writer.writeNext(goodsVector.getHeaders(),false);
+                            writer.writeAll(goodsVector.toStringList(),false);
+                            break;
+                        case "class Models.OrderModel":
+                            writer.writeNext(ordersVector.getHeaders(),false);
+                            writer.writeAll(ordersVector.toStringList(),false);
+                            break;
+                        case "class Models.ParameterModel":
+                            writer.writeNext(parametersVector.getHeaders(),false);
+                            writer.writeAll(parametersVector.toStringList(),false);
+                            break;
+                    }
+                    try {
+                        writer.close();
+                        AlertDone();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             addButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -110,21 +145,25 @@ public class EditDocController{
                             case "class Models.ItemModel":
                                 resultList.add(new ItemModel(tmp));
                                 itemsVector.addItem(new ItemModel(tmp));
+                                writer.writeNext(itemsVector.getHeaders(),false);
                                 writer.writeAll(itemsVector.toStringList(),false);
                                 break;
                             case "class Models.GoodModel":
                                 resultList.add(new GoodModel(tmp));
                                 goodsVector.addGood(new GoodModel(tmp));
+                                writer.writeNext(goodsVector.getHeaders(),false);
                                 writer.writeAll(goodsVector.toStringList(),false);
                                 break;
                             case "class Models.OrderModel":
                                 resultList.add(new OrderModel(tmp));
                                 ordersVector.addOrder(new OrderModel(tmp));
+                                writer.writeNext(ordersVector.getHeaders(),false);
                                 writer.writeAll(ordersVector.toStringList(),false);
                                 break;
                             case "class Models.ParameterModel":
                                 resultList.add(new ParameterModel(tmp));
                                 parametersVector.addParameter(new ParameterModel(tmp));
+                                writer.writeNext(parametersVector.getHeaders(),false);
                                 writer.writeAll(parametersVector.toStringList(),false);
                                 break;
                         }
@@ -156,18 +195,22 @@ public class EditDocController{
                         switch (fileTableView.getSelectionModel().getSelectedItem().getClass().getName()){
                             case "Models.ItemModel":
                                 itemsVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeNext(itemsVector.getHeaders(),false);
                                 writer.writeAll(itemsVector.toStringList(),false);
                                 break;
                             case "Models.GoodModel":
                                 goodsVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeNext(goodsVector.getHeaders(),false);
                                 writer.writeAll(goodsVector.toStringList(),false);
                                 break;
                             case "Models.OrderModel":
                                 ordersVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeNext(ordersVector.getHeaders(),false);
                                 writer.writeAll(ordersVector.toStringList(),false);
                                 break;
                             case "Models.ParameterModel":
                                 parametersVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeNext(parametersVector.getHeaders(),false);
                                 writer.writeAll(parametersVector.toStringList(),false);
                                 break;
                         }
@@ -181,7 +224,7 @@ public class EditDocController{
             });
 
 
-            hbBut.getChildren().addAll(addButton,editButton,deleteButton);
+            hbBut.getChildren().addAll(addButton,deleteButton,saveButton);
             hbBut.setSpacing(5);
 
             final VBox vbox = new VBox();
@@ -190,7 +233,6 @@ public class EditDocController{
             vbox.setFillWidth(true);
             vbox.setMinWidth(fileTableView.getFixedCellSize()*5);//getMaxWidth()+100);
             vbox.getChildren().addAll(fileTableView,hbRow,hbBut);
-
 
             ((Group)scene.getRoot()).getChildren().addAll(vbox);
             stage.setTitle(fileName);
@@ -218,21 +260,81 @@ public class EditDocController{
                     tableColumn = new TableColumn(itemsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<ItemModel,StringBinding>(itemsVector.getHeaders()[i]));
+                    tableColumn.setCellFactory(TextFieldTableCell.<ParameterModel> forTableColumn());
+                    tableColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent event) {
+                            TablePosition<ItemModel, String> pos = event.getTablePosition();
+                            String newParameter = (String)event.getNewValue();
+                            int row = pos.getRow();
+                            ItemModel model = (ItemModel) event.getTableView().getItems().get(row);
+                            try {
+                                model.applyEdit(newParameter,pos.getColumn());
+                            } catch (EditException e) {
+                                AlertError(e.toString());
+                            }
+                        }
+                    });
                     break;
                 case "class Models.GoodModel":
                     tableColumn = new TableColumn(goodsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<GoodModel,StringBinding>(goodsVector.getHeaders()[i]));
+                    tableColumn.setCellFactory(TextFieldTableCell.<ParameterModel> forTableColumn());
+                    tableColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent event) {
+                            TablePosition<GoodModel, String> pos = event.getTablePosition();
+                            String newParameter = (String)event.getNewValue();
+                            int row = pos.getRow();
+                            GoodModel model = (GoodModel) event.getTableView().getItems().get(row);
+                            try {
+                                model.applyEdit(newParameter,pos.getColumn());
+                            } catch (EditException e) {
+                                AlertError(e.toString());
+                            }
+                        }
+                    });
                     break;
                 case "class Models.OrderModel":
                     tableColumn = new TableColumn(ordersVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<OrderModel,StringBinding>(ordersVector.getHeaders()[i]));
+                    tableColumn.setCellFactory(TextFieldTableCell.<ParameterModel> forTableColumn());
+                    tableColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent event) {
+                            TablePosition<OrderModel, String> pos = event.getTablePosition();
+                            String newParameter = (String)event.getNewValue();
+                            int row = pos.getRow();
+                            OrderModel model = (OrderModel) event.getTableView().getItems().get(row);
+                            try {
+                                model.applyEdit(newParameter,pos.getColumn());
+                            } catch (EditException e) {
+                                AlertError(e.toString());
+                            }
+                        }
+                    });
                     break;
                 case "class Models.ParameterModel":
                     tableColumn = new TableColumn(parametersVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<ParameterModel,StringBinding>(parametersVector.getHeaders()[i]));
+                    tableColumn.setCellFactory(TextFieldTableCell.<ParameterModel> forTableColumn());
+                    tableColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent event) {
+                            TablePosition<ParameterModel, String> pos = event.getTablePosition();
+                            String newParameter = (String)event.getNewValue();
+                            int row = pos.getRow();
+                            ParameterModel model = (ParameterModel) event.getTableView().getItems().get(row);
+                            try {
+                                model.applyEdit(newParameter,pos.getColumn());
+                            } catch (EditException e) {
+                                AlertError(e.toString());
+                            }
+                        }
+                    });
                     break;
             }
             fileTableView.getColumns().add(tableColumn);
@@ -281,5 +383,18 @@ public class EditDocController{
                 break;
         }
         return true;
+    }
+
+    public void AlertError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(error);
+        alert.showAndWait();
+    }
+    public void AlertDone(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText("Done!");
+        alert.showAndWait();
     }
 }
