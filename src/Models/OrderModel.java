@@ -1,7 +1,6 @@
 package Models;
 
 import Exceptions.EditException;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
