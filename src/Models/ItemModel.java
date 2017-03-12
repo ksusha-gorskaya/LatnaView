@@ -15,6 +15,10 @@ public class ItemModel {
     private final SimpleDoubleProperty Volume; //объем
     private final SimpleIntegerProperty Rigidity;  //жесткость
 
+    @Override
+    public String toString(){
+        return MO.getValue()+";"+Index.getValue()+";"+Count.getValue()+";"+Volume.getValue()+";"+Rigidity.getValue();
+    }
     public int getCountField(){return 5;}
 
     public ItemModel(String mo, Long index, Integer count, Double volume, Integer rigidity){

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -18,6 +20,9 @@ public class Parameters {
         readFromFile(filePath);
     }
 
+    public void addParameter(ParameterModel model){
+        parameters.add(model);
+    }
     private void readFromFile(String filePath) throws Exception
     {
         String line = "";
@@ -55,6 +60,9 @@ public class Parameters {
     public String[] getHeaders(){
         return new String[]{"Parameter","Value"};
     }
+    public void deleteItem(int index){
+        parameters.remove(index+1);
+    }
 
     public ParameterModel[] toParametersArray(){
         ParameterModel[] array=new ParameterModel[parameters.size()];
@@ -63,4 +71,12 @@ public class Parameters {
         }
         return array;
     }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(parameters.size());
+        for (ParameterModel item: parameters ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
+    }
+
 }

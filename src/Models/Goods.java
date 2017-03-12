@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,6 +18,13 @@ public class Goods {
     {
         goods = new Vector<>();
         readFromFile(filePath);
+    }
+
+    public void addGood(GoodModel model){
+        goods.add(model);
+    }
+    public void deleteItem(int index){
+        goods.remove(index+1);
     }
 
     private void readFromFile(String filePath) throws Exception
@@ -68,4 +77,12 @@ public class Goods {
         }
         return array;
     }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(goods.size());
+        for (GoodModel item: goods ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
+    }
+
 }

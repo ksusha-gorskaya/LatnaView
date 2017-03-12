@@ -16,6 +16,11 @@ public class GoodModel {
     private final SimpleIntegerProperty InBoxes;
     private final SimpleIntegerProperty OneZero;
 
+    @Override
+    public String toString(){
+        return IndexOfShop.getValue()+";"+IndexOfProduct.getValue()+";"+InPieces.getValue()+
+                ";"+InLiters.getValue()+";"+InBoxes.getValue()+";"+OneZero.getValue();
+    }
     public int getCountField(){return 6;}
 
     public GoodModel(long indexOfShop, long indexOfProduct, float inpieces, float inliters, int inboxes, int onezero){

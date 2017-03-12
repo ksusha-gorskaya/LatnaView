@@ -8,9 +8,15 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class OrderModel {
     private final SimpleLongProperty IndexOfShop;
+    private final SimpleStringProperty Wtf;
     private final SimpleStringProperty Deadline;
     private final SimpleStringProperty DeliverySide;
-    private final SimpleStringProperty Wtf;
+
+    @Override
+    public String toString(){
+        return IndexOfShop.getValue()+";"+Wtf.getValue()
+                +";"+Deadline.getValue()+";"+DeliverySide.getValue();
+    }
 
     public int getCountField(){return 4;}
 

@@ -1,10 +1,8 @@
 package controllers;
 
 import Models.*;
+import com.opencsv.CSVWriter;
 import javafx.beans.binding.StringBinding;
-import Models.Goods;
-import Models.Items;
-import Models.Orders;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Created by Nikolay Kanatov on 01.03.2017.
@@ -32,6 +33,7 @@ public class EditDocController{
     public Orders ordersVector;
     public Goods goodsVector;
     public Parameters parametersVector;
+    public CSVWriter writer = null;
 
     public final ObservableList resultList = FXCollections.observableArrayList();
 
@@ -83,12 +85,17 @@ public class EditDocController{
             Button addButton = new Button("Add row");
             Button editButton = new Button("Edit");
             Button deleteButton = new Button("Delete");
-            Button saveButton = new Button("Save");
 
             addButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     String tmp="";
+                    try {
+                        writer = new CSVWriter(new FileWriter(filePath),';');
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     for (int i=0;i<tx.length;i++)
                         if(tx[i].getText().isEmpty()){
                             tmp="";
@@ -102,16 +109,29 @@ public class EditDocController{
                         switch (resultList.get(0).getClass().toString()){
                             case "class Models.ItemModel":
                                 resultList.add(new ItemModel(tmp));
+                                itemsVector.addItem(new ItemModel(tmp));
+                                writer.writeAll(itemsVector.toStringList(),false);
                                 break;
                             case "class Models.GoodModel":
                                 resultList.add(new GoodModel(tmp));
+                                goodsVector.addGood(new GoodModel(tmp));
+                                writer.writeAll(goodsVector.toStringList(),false);
                                 break;
                             case "class Models.OrderModel":
                                 resultList.add(new OrderModel(tmp));
+                                ordersVector.addOrder(new OrderModel(tmp));
+                                writer.writeAll(ordersVector.toStringList(),false);
                                 break;
                             case "class Models.ParameterModel":
                                 resultList.add(new ParameterModel(tmp));
+                                parametersVector.addParameter(new ParameterModel(tmp));
+                                writer.writeAll(parametersVector.toStringList(),false);
                                 break;
+                        }
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }else{
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -127,12 +147,41 @@ public class EditDocController{
                 public void handle(ActionEvent event) {
                     if(fileTableView.getSelectionModel().getSelectedIndex()>=0){
                         resultList.remove(fileTableView.getSelectionModel().getSelectedIndex());
-                        fileTableView.getSelectionModel().cellSelectionEnabledProperty().set(false);
+                        try {
+                            writer = new CSVWriter(new FileWriter(filePath),';');
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        switch (fileTableView.getSelectionModel().getSelectedItem().getClass().getName()){
+                            case "Models.ItemModel":
+                                itemsVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeAll(itemsVector.toStringList(),false);
+                                break;
+                            case "Models.GoodModel":
+                                goodsVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeAll(goodsVector.toStringList(),false);
+                                break;
+                            case "Models.OrderModel":
+                                ordersVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeAll(ordersVector.toStringList(),false);
+                                break;
+                            case "Models.ParameterModel":
+                                parametersVector.deleteItem(fileTableView.getSelectionModel().getSelectedIndex());
+                                writer.writeAll(parametersVector.toStringList(),false);
+                                break;
+                        }
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
 
-            hbBut.getChildren().addAll(addButton,editButton,deleteButton,saveButton);
+
+            hbBut.getChildren().addAll(addButton,editButton,deleteButton);
             hbBut.setSpacing(5);
 
             final VBox vbox = new VBox();

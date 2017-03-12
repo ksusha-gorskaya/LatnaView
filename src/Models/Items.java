@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -59,12 +61,7 @@ public class Items {
     }
 
     public void deleteItem(int index){
-        for (int i = 0; i < items.size(); i++){
-            if (items.get(i).getIndex() == index){
-                items.remove(i);
-                return;
-            }
-        }
+        items.remove(index+1);
     }
 
     public final int getSize(){
@@ -89,6 +86,13 @@ public class Items {
             array[i]=items.get(i);
         }
         return array;
+    }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(items.size());
+        for (ItemModel item: items ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
     }
     public String[] getHeaders(){
         return new String[]{"MO","Index","Count","Volume","Rigidity"};

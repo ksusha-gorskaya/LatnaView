@@ -13,6 +13,10 @@ public class ParameterModel {
     private final SimpleStringProperty Parameter;
     private final SimpleStringProperty Value;
 
+    @Override
+    public String toString(){
+        return Parameter.getValue()+";"+Value.getValue();
+    }
     public int getCountField(){return 2;}
 
     public ParameterModel(String parameter, String value){
