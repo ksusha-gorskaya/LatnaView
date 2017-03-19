@@ -17,10 +17,10 @@ public class Warehouse {
     private Integer directionOfMovement;
     private Vector<Point> northDelivery;
     private Vector<Point> southDelivery;
-    private int numberOfRows;
+    public int numberOfColumns;
     private Vector<Point> coordinatesUpperLeftVertexRow;
     private Vector<Point> coordinatesLowerRightVertexRow;
-    private ArrayList<Vector<String>> shelves;
+    public ArrayList<Vector<String>> shelves;
 
     String line = "";
     BufferedReader br = null;
@@ -32,7 +32,7 @@ public class Warehouse {
         super();
         northDelivery = new Vector<Point>();
         southDelivery = new Vector<Point>();
-        numberOfRows = 0;
+        numberOfColumns = 0;
         coordinatesUpperLeftVertexRow = new Vector<Point>();
         coordinatesLowerRightVertexRow = new Vector<Point>();
     }
@@ -91,7 +91,7 @@ public class Warehouse {
             String[] rows = line.split(";");
             for (int i=1; i<rows.length; i++){
                 if (emptyField)     //(rows[i].contains("Пустая тара"))
-                    shelves.get(i-1).add("#");
+                    shelves.get(i-1).add("Пусто");
                 else
                     if (rows[i].length()!=0) shelves.get(i-1).add(rows[i]);
             }
@@ -117,7 +117,7 @@ public class Warehouse {
             line = br.readLine();//read number of rows
             elements = line.split(";");
             try {
-                numberOfRows = Integer.parseInt(elements[1]);
+                numberOfColumns = Integer.parseInt(elements[1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -131,7 +131,7 @@ public class Warehouse {
             readCoordinates(coordinatesLowerRightVertexRow);
 
             line = br.readLine();
-            readShelves(numberOfRows);
+            readShelves(numberOfColumns);
 
 
         } catch (FileNotFoundException e1) {

@@ -39,6 +39,8 @@ public class EditDocController{
 
     public final ObservableList resultList = FXCollections.observableArrayList();
 
+    private Stage stage;
+
     public void setResult(String fileName,String filePath){
         Scene scene = new Scene(new Group());
         try {
@@ -95,20 +97,20 @@ public class EditDocController{
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    switch (resultList.get(0).getClass().toString()){
-                        case "class Models.ItemModel":
+                    switch (resultList.get(0).getClass().getName()){
+                        case "Models.ItemModel":
                             writer.writeNext(itemsVector.getHeaders(),false);
                             writer.writeAll(itemsVector.toStringList(),false);
                             break;
-                        case "class Models.GoodModel":
+                        case "Models.GoodModel":
                             writer.writeNext(goodsVector.getHeaders(),false);
                             writer.writeAll(goodsVector.toStringList(),false);
                             break;
-                        case "class Models.OrderModel":
+                        case "Models.OrderModel":
                             writer.writeNext(ordersVector.getHeaders(),false);
                             writer.writeAll(ordersVector.toStringList(),false);
                             break;
-                        case "class Models.ParameterModel":
+                        case "Models.ParameterModel":
                             writer.writeNext(parametersVector.getHeaders(),false);
                             writer.writeAll(parametersVector.toStringList(),false);
                             break;
@@ -140,27 +142,27 @@ public class EditDocController{
                             tx[i].setText("");
                         }
 
-                    if(Validate(resultList.get(0).getClass().toString().split(" ")[1],tmp)){
-                        switch (resultList.get(0).getClass().toString()){
-                            case "class Models.ItemModel":
+                    if(Validate(resultList.get(0).getClass().getName(),tmp)){
+                        switch (resultList.get(0).getClass().getName()){
+                            case "Models.ItemModel":
                                 resultList.add(new ItemModel(tmp));
                                 itemsVector.addItem(new ItemModel(tmp));
                                 writer.writeNext(itemsVector.getHeaders(),false);
                                 writer.writeAll(itemsVector.toStringList(),false);
                                 break;
-                            case "class Models.GoodModel":
+                            case "Models.GoodModel":
                                 resultList.add(new GoodModel(tmp));
                                 goodsVector.addGood(new GoodModel(tmp));
                                 writer.writeNext(goodsVector.getHeaders(),false);
                                 writer.writeAll(goodsVector.toStringList(),false);
                                 break;
-                            case "class Models.OrderModel":
+                            case "Models.OrderModel":
                                 resultList.add(new OrderModel(tmp));
                                 ordersVector.addOrder(new OrderModel(tmp));
                                 writer.writeNext(ordersVector.getHeaders(),false);
                                 writer.writeAll(ordersVector.toStringList(),false);
                                 break;
-                            case "class Models.ParameterModel":
+                            case "Models.ParameterModel":
                                 resultList.add(new ParameterModel(tmp));
                                 parametersVector.addParameter(new ParameterModel(tmp));
                                 writer.writeNext(parametersVector.getHeaders(),false);
@@ -231,7 +233,7 @@ public class EditDocController{
             vbox.setSpacing(5);
             vbox.setPadding(new Insets(10,10,0,10));
             vbox.setFillWidth(true);
-            vbox.setMinWidth(fileTableView.getFixedCellSize()*5);//getMaxWidth()+100);
+            vbox.setMinWidth(fileTableView.getFixedCellSize()*5);
             vbox.getChildren().addAll(fileTableView,hbRow,hbBut);
 
             ((Group)scene.getRoot()).getChildren().addAll(vbox);
@@ -252,11 +254,11 @@ public class EditDocController{
     public void FillTable(ObservableList resultList,int countField) {
         fileTableView.setItems(resultList);
         fileTableView.setEditable(true);
-        String str =resultList.get(0).getClass().toString();
+        String str =resultList.get(0).getClass().getName();
         for(int i=0;i<countField;i++) {
             TableColumn tableColumn=null;
             switch(str){
-                case "class Models.ItemModel":
+                case "Models.ItemModel":
                     tableColumn = new TableColumn(itemsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<ItemModel,StringBinding>(itemsVector.getHeaders()[i]));
@@ -276,7 +278,7 @@ public class EditDocController{
                         }
                     });
                     break;
-                case "class Models.GoodModel":
+                case "Models.GoodModel":
                     tableColumn = new TableColumn(goodsVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<GoodModel,StringBinding>(goodsVector.getHeaders()[i]));
@@ -296,7 +298,7 @@ public class EditDocController{
                         }
                     });
                     break;
-                case "class Models.OrderModel":
+                case "Models.OrderModel":
                     tableColumn = new TableColumn(ordersVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<OrderModel,StringBinding>(ordersVector.getHeaders()[i]));
@@ -316,7 +318,7 @@ public class EditDocController{
                         }
                     });
                     break;
-                case "class Models.ParameterModel":
+                case "Models.ParameterModel":
                     tableColumn = new TableColumn(parametersVector.getHeaders()[i]);
                     tableColumn.setCellValueFactory(
                             new PropertyValueFactory<ParameterModel,StringBinding>(parametersVector.getHeaders()[i]));
