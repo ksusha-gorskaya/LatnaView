@@ -1,4 +1,6 @@
-package sample;
+package Readers;
+
+import Models.Point;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,19 +12,23 @@ import java.util.Vector;
 /**
  * Created by Ксения Горская on 23.01.2017.
  */
-public class ReadWarehouse {
+public class Warehouse {
+    private static Warehouse instance;
     private Integer directionOfMovement;
     private Vector<Point> northDelivery;
     private Vector<Point> southDelivery;
     private int numberOfRows;
     private Vector<Point> coordinatesUpperLeftVertexRow;
     private Vector<Point> coordinatesLowerRightVertexRow;
-    private ArrayList<String[]> shelves;
+    private ArrayList<Vector<String>> shelves;
 
     String line = "";
     BufferedReader br = null;
 
-    public ReadWarehouse() {
+    public static Warehouse getInstance(){
+        return instance;
+    }
+    public Warehouse() {
         super();
         northDelivery = new Vector<Point>();
         southDelivery = new Vector<Point>();
@@ -48,7 +54,6 @@ public class ReadWarehouse {
         if (elements.length >= 1 || (elements[i].startsWith("(") && elements[i+1].endsWith(")"))) {
             x = elements[i].replace(",", ".").substring(2);
             y = elements[i + 1].replace(",", ".").substring(0, elements[i + 1].length() - 2);
-            //System.out.println("x " + x + " y " + y);
         }
         try {
             tmp = new Point(x,y);
@@ -77,11 +82,20 @@ public class ReadWarehouse {
     }
 
     public void readShelves(int numberOfRows) throws Exception {
-        shelves = new ArrayList<String[]>();
-
+        shelves = new ArrayList<Vector<String>>(numberOfRows);
+        for (int i = 0; i < numberOfRows; i++){
+            shelves.add(new Vector<String>());
+        }
+        boolean emptyField = true;
         while ((line = br.readLine()) != null) {
             String[] rows = line.split(";");
-            shelves.add(rows);
+            for (int i=1; i<rows.length; i++){
+                if (emptyField)     //(rows[i].contains("Пустая тара"))
+                    shelves.get(i-1).add("#");
+                else
+                    if (rows[i].length()!=0) shelves.get(i-1).add(rows[i]);
+            }
+            emptyField=false;
         }
     }
 
@@ -97,21 +111,8 @@ public class ReadWarehouse {
                 e.printStackTrace();
             }
 
-            //System.out.println(directionOfMovement);
-
             readExpedition(northDelivery);
-
-            /*for (int i=0; i<northDelivery.size(); i++){
-                System.out.println(northDelivery.get(i).getX() + "; " + northDelivery.get(i).getY());
-            }
-            System.out.println();*/
-
             readExpedition(southDelivery);
-
-            /*for (int i=0; i<southDelivery.size(); i++){
-                System.out.println(southDelivery.get(i).getX() + "; " + southDelivery.get(i).getY());
-            }
-            System.out.println();*/
 
             line = br.readLine();//read number of rows
             elements = line.split(";");
@@ -121,36 +122,17 @@ public class ReadWarehouse {
                 e.printStackTrace();
             }
 
-            //System.out.println(numberOfRows);
-
             line = br.readLine();
             line = br.readLine();
             line = br.readLine();
             readCoordinates(coordinatesUpperLeftVertexRow);
 
-            /*for (int i=0; i<coordinatesUpperLeftVertexRow.size(); i++){
-                System.out.println(coordinatesUpperLeftVertexRow.get(i).getX() + "; " + coordinatesUpperLeftVertexRow.get(i).getY() );
-            }
-            System.out.println();*/
-
             line = br.readLine();
             readCoordinates(coordinatesLowerRightVertexRow);
-
-            /*for (int i=0; i<coordinatesLowerRightVertexRow.size(); i++){
-                System.out.println(coordinatesLowerRightVertexRow.get(i).getX() + "; " + coordinatesLowerRightVertexRow.get(i).getY());
-            }
-            System.out.println();*/
 
             line = br.readLine();
             readShelves(numberOfRows);
 
-            //write all data in console
-            /*for (int i=1; i<shelves.size(); i++){
-                for (int j=1; j<shelves.get(i).length; j++) {
-                    System.out.print(shelves.get(i)[j] + " ");
-                }
-                System.out.println();
-            }*/
 
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
