@@ -1,8 +1,6 @@
 package Models;
 
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
+import Exceptions.EditException;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -12,13 +10,21 @@ public class ParameterModel {
     private final SimpleStringProperty Parameter;
     private final SimpleStringProperty Value;
 
+    @Override
+    public String toString(){
+        return Parameter.getValue()+";"+Value.getValue();
+    }
     public int getCountField(){return 2;}
 
     public ParameterModel(String parameter, String value){
         Parameter = new SimpleStringProperty(parameter);
         Value = new SimpleStringProperty(value);
     }
-
+    public ParameterModel(String model){
+        String[] tmp = model.split(";");
+        Parameter = new SimpleStringProperty(tmp[0]);
+        Value = new SimpleStringProperty(tmp[1]);
+    }
     public String getParameter() {
         return Parameter.get();
     }
@@ -33,5 +39,10 @@ public class ParameterModel {
 
     public void setValue(String value) {
         this.Value.set(value);
+    }
+
+    public void applyEdit(String str, int column) throws EditException{
+        if(column==0) setParameter(str);
+        if(column==1) setValue(str);
     }
 }
