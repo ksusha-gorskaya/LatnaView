@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,6 +18,13 @@ public class Orders {
     {
         orders = new Vector<>();
         readFromFile(filePath);
+    }
+
+    public void addOrder(OrderModel model){
+        orders.add(model);
+    }
+    public void deleteItem(int index){
+        orders.remove(index+1);
     }
 
     private void readFromFile(String filePath) throws Exception
@@ -40,7 +49,7 @@ public class Orders {
                     exp = Expedition.North;
                 }
 
-                OrderModel o = new OrderModel(Long.parseLong(elements[0]), elements[1], deadline, exp);
+                OrderModel o = new OrderModel(elements[0], elements[1], deadline, exp);
                 orders.add(o);
             }
         } catch (FileNotFoundException e) {
@@ -74,4 +83,12 @@ public class Orders {
         }
         return array;
     }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(orders.size());
+        for (OrderModel item: orders ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
+    }
+
 }

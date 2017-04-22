@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -29,8 +31,7 @@ public class Items {
                 String[] elements = line.split(";");
                 //shelf,index,-,volume,rigidity
                 ItemModel it;
-                it = new ItemModel(elements[0],Long.parseLong(elements[1]),Integer.parseInt(elements[2]),
-                        Double.parseDouble(elements[3].replaceAll(" ","")),Integer.parseInt(elements[4]));
+                it = new ItemModel(elements[0],elements[1],elements[2],elements[3].replaceAll(" ",""),elements[4]);
 
                 items.add(it);
             }
@@ -59,12 +60,7 @@ public class Items {
     }
 
     public void deleteItem(int index){
-        for (int i = 0; i < items.size(); i++){
-            if (items.get(i).getIndex() == index){
-                items.remove(i);
-                return;
-            }
-        }
+        items.remove(index+1);
     }
 
     public final int getSize(){
@@ -77,7 +73,7 @@ public class Items {
 
     public boolean isExist(long index) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getIndex() == index) {
+            if (Long.parseLong(items.get(i).getIndex()) == index) {
                 return true;
             }
         }
@@ -89,6 +85,13 @@ public class Items {
             array[i]=items.get(i);
         }
         return array;
+    }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(items.size());
+        for (ItemModel item: items ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
     }
     public String[] getHeaders(){
         return new String[]{"MO","Index","Count","Volume","Rigidity"};

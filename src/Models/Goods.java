@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,6 +18,13 @@ public class Goods {
     {
         goods = new Vector<>();
         readFromFile(filePath);
+    }
+
+    public void addGood(GoodModel model){
+        goods.add(model);
+    }
+    public void deleteItem(int index){
+        goods.remove(index+1);
     }
 
     private void readFromFile(String filePath) throws Exception
@@ -33,7 +42,7 @@ public class Goods {
                 }
                 elements[2] = elements[2].replace(",",".");
                 elements[3] = elements[3].replace(",",".");
-                GoodModel g = new GoodModel(Long.parseLong(elements[0]), Long.parseLong(elements[1]), Float.parseFloat(elements[2]), Float.parseFloat(elements[3]), Integer.parseInt(elements[4]), Integer.parseInt(elements[5]));
+                GoodModel g = new GoodModel(elements[0],elements[1],elements[2],elements[3],elements[4],elements[5]);
                 goods.add(g);
             }
         } catch (FileNotFoundException e) {
@@ -58,7 +67,7 @@ public class Goods {
 
     public String[] getHeaders(){
         //return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "1-inpieces,0-inboxes"};
-        return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "1-inpieces"};
+        return new String[]{"IndexOfShop","IndexOfProduct","InPieces","InLiters", "InBoxes", "OneZero"};
     }
 
     public GoodModel[] toGoodsArray(){
@@ -68,4 +77,12 @@ public class Goods {
         }
         return array;
     }
+    public List<String[]> toStringList(){
+        List<String[]> list =new ArrayList<>(goods.size());
+        for (GoodModel item: goods ) {
+            list.add(item.toString().split(";"));
+        }
+        return list;
+    }
+
 }
